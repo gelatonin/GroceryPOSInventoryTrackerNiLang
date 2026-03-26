@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/inventory.css">
+</head>
+
+<body class="inventory-page">
+    <div class="app-menu">
+        <button type="button" class="app-menu-toggle" data-action="menu-toggle" aria-expanded="false"
+            aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="app-menu-list" data-menu-list hidden>
+            <a href="/inventory.html" class="app-menu-item">Inventory</a>
+            <button type="button" data-action="logout" class="app-menu-item app-menu-item-danger">Logout</button>
+        </div>
+    </div>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">Inventory</h1>
+                <p class="sidebar-subtitle">Management System</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" onclick="showView('inventory'); return false;" class="nav-link active-nav"
+                            data-view="inventory">
+                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                </path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                            <span>Inventory</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="showView('categories'); return false;" class="nav-link"
+                            data-view="categories">
+                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                                </path>
+                            </svg>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Inventory View -->
+            <div id="inventory-view" class="view-content">
+                <div class="header-actions">
+                    <div class="page-header" style="margin-bottom: 0;">
+                        <h1 class="page-title">Inventory</h1>
+                        <p class="page-description">Manage your inventory items</p>
+                    </div>
+                    <button onclick="openItemModal()" class="btn btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Item
+                    </button>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-row">
+                        <div class="search-wrapper">
+                            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="search-input" class="search-input"
+                                placeholder="Search by name or SKU..." oninput="filterInventory()">
+                        </div>
+                        <select id="category-filter" class="form-select" onchange="filterInventory()">
+                            <option value="all">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>SKU</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- Inventory items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories View -->
+            <div id="categories-view" class="view-content hidden">
+                <div class="header-actions">
+                    <div class="page-header" style="margin-bottom: 0;">
+                        <h1 class="page-title">Categories</h1>
+                        <p class="page-description">Organize your inventory items</p>
+                    </div>
+                    <button onclick="toggleCategoryForm()" id="add-category-btn" class="btn btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Category
+                    </button>
+                </div>
+
+                <div id="category-form" class="card hidden" style="margin-bottom: 24px;">
+                    <h2 class="card-header" id="category-form-title">Add New Category</h2>
+                    <form id="category-form-element" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Category Name *</label>
+                                <input type="text" id="category-name" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Color</label>
+                                <input type="color" id="category-color" value="#3b82f6" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="category-description" rows="3" class="form-textarea"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span id="category-submit-text">Add Category</span>
+                            </button>
+                            <button type="button" onclick="cancelCategoryForm()"
+                                class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="categories-grid" class="grid grid-cols-3">
+                    <!-- Categories will be inserted here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Item Modal -->
+    <div id="item-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="item-modal-title">Add New Item</h2>
+                <button onclick="closeItemModal()" class="modal-close">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="item-form" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Item Name *</label>
+                            <input type="text" id="item-name" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SKU *</label>
+                            <input type="text" id="item-sku" required class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select id="item-category" required class="form-select"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Image</label>
+                            <input type="file" id="item-image-file" accept="image/*" class="form-input">
+                            <input type="hidden" id="item-image">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Quantity *</label>
+                            <input type="number" id="item-quantity" required min="0" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Min Stock Level *</label>
+                            <input type="number" id="item-minstock" required min="0" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price *</label>
+                            <input type="number" id="item-price" required min="0" step="0.01" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="item-description" rows="3" class="form-textarea"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span id="item-submit-text">Add item</span>
+                        </button>
+                        <button type="button" onclick="closeItemModal()" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/inventory.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/security.js"></script>
+</body>
+
+</html>
