@@ -1,0 +1,98 @@
+/* Full-width layout when sidebar is removed (management page) */
+.management-page-solo .management-container-solo {
+  display: block;
+  min-height: 100vh;
+}
+
+.management-page-solo .management-container-solo .main-content {
+  width: 100%;
+  max-width: 100%;
+}
+
+.management-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.management-stats-grid {
+  margin-bottom: 24px;
+}
+
+.low-stock-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #232338;
+  background-color: #1A1A2E;
+  color: #8888A0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+
+.low-stock-avatar:hover {
+  transform: scale(1.04);
+  color: #ffffff;
+}
+
+.low-stock-avatar:active {
+  transform: scale(0.98);
+}
+
+.low-stock-avatar svg {
+  width: 22px;
+  height: 22px;
+}
+
+.low-stock-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.low-stock-avatar.low-stock-avatar--alert {
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+  animation: lowStockPulse 1.5s infinite;
+}
+
+@keyframes lowStockPulse {
+  0% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.08);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+  }
+}
+
+.sales-chart-card {
+  padding-top: 0;
+}
+
+.sales-chart-wrapper {
+  position: relative;
+  height: 340px;
+  padding: 8px 0 0;
+}
