@@ -1,6 +1,7 @@
 const API_BASE = '/api';
 
 let salesChart = null;
+const RESTOCK_SEEN_KEY = 'restockBotSeenSuggestionKeys';
 
 async function api(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -183,33 +184,118 @@ function renderSalesChart(salesEvents) {
   });
 }
 
-function getLowStockItems(items) {
-  return items.filter(item => {
-    const qty = Number(item.quantity);
-    const minStock = Number(item.minStock);
-    if (Number.isNaN(qty) || Number.isNaN(minStock)) return false;
-    return qty <= minStock;
-  });
+function buildDemandMap(salesEvents, days = 7) {
+  const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+  const demandByKey = new Map();
+
+  for (const order of salesEvents) {
+    const orderTime = new Date(order.orderTime || order.createdAt || 0).getTime();
+    if (Number.isNaN(orderTime) || orderTime < cutoff) continue;
+    if (!Array.isArray(order.items)) continue;
+
+    for (const line of order.items) {
+      const key = String(line.itemId || line.name || '').trim().toLowerCase();
+      if (!key) continue;
+      const qty = Number(line.quantity) || 0;
+      demandByKey.set(key, (demandByKey.get(key) || 0) + qty);
+    }
+  }
+
+  return demandByKey;
 }
 
-function renderLowStockList(lowStockItems) {
+function getRestockRecommendations(items, salesEvents) {
+  const demandMap = buildDemandMap(salesEvents, 7);
+
+  return items
+    .map((item) => {
+      const quantity = Number(item.quantity);
+      const minStock = Number(item.minStock);
+      if (Number.isNaN(quantity) || Number.isNaN(minStock)) return null;
+
+      const keyById = String(item.id || '').trim().toLowerCase();
+      const keyByName = String(item.name || '').trim().toLowerCase();
+      const demand7d = (demandMap.get(keyById) || 0) + (keyById !== keyByName ? (demandMap.get(keyByName) || 0) : 0);
+
+      const lowStock = quantity <= minStock;
+      const highDemand = demand7d >= minStock;
+      const suggestedQty = Math.max(0, Math.ceil(Math.max((minStock * 2) - quantity, demand7d - quantity + minStock)));
+
+      if (!lowStock && !highDemand) return null;
+      if (suggestedQty <= 0) return null;
+
+      let reason = '';
+      if (lowStock && highDemand) reason = 'stock is low and demand is high';
+      else if (lowStock) reason = 'stock is low';
+      else reason = 'demand is high';
+
+      return {
+        ...item,
+        demand7d,
+        suggestedQty,
+        reason,
+        botMessage: `Order ${suggestedQty} ${item.name} because ${reason}.`
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.suggestedQty - a.suggestedQty)
+    .map((item) => ({
+      ...item,
+      suggestionKey: `${String(item.id || item.sku || item.name || '').toLowerCase()}|${item.suggestedQty}|${item.reason}`
+    }));
+}
+
+function getSeenSuggestionKeys() {
+  try {
+    const raw = localStorage.getItem(RESTOCK_SEEN_KEY);
+    if (!raw) return new Set();
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed.map((v) => String(v)));
+  } catch {
+    return new Set();
+  }
+}
+
+function setSeenSuggestionKeys(seenSet) {
+  try {
+    localStorage.setItem(RESTOCK_SEEN_KEY, JSON.stringify(Array.from(seenSet)));
+  } catch {
+    // Ignore storage errors so recommendations still work.
+  }
+}
+
+function getUnreadRecommendations(recommendations) {
+  const seen = getSeenSuggestionKeys();
+  return recommendations.filter((item) => !seen.has(item.suggestionKey));
+}
+
+function markRecommendationsAsRead(recommendations) {
+  const seen = getSeenSuggestionKeys();
+  recommendations.forEach((item) => {
+    if (item && item.suggestionKey) seen.add(item.suggestionKey);
+  });
+  setSeenSuggestionKeys(seen);
+}
+
+function renderLowStockList(recommendations) {
   const list = document.getElementById('lowStockList');
   if (!list) return;
 
-  if (lowStockItems.length === 0) {
-    list.innerHTML = `<p class="empty-state">All good. No low stock items.</p>`;
+  if (recommendations.length === 0) {
+    list.innerHTML = `<p class="empty-state">No restock suggestions right now.</p>`;
     return;
   }
 
-  list.innerHTML = lowStockItems.map(item => `
+  list.innerHTML = recommendations.map(item => `
     <div class="alert-item">
       <div class="alert-info">
         <p class="alert-name">${item.name || '-'}</p>
-        <p class="alert-sku">SKU: ${item.sku || '-'}</p>
+        <p class="alert-sku">${item.botMessage}</p>
       </div>
       <div class="alert-quantity">
-        <p class="alert-qty-text">${Number(item.quantity) <= 0 ? 0 : item.quantity} / ${item.minStock}</p>
-        <p class="alert-qty-label">${Number(item.quantity) <= 0 ? 'Out of stock' : 'Min stock level'}</p>
+        <p class="alert-qty-text">Order ${item.suggestedQty}</p>
+        <p class="alert-qty-label">Stock: ${Number(item.quantity) <= 0 ? 0 : item.quantity} | 7d demand: ${item.demand7d}</p>
       </div>
     </div>
   `).join('');
@@ -220,26 +306,27 @@ async function updateLowStockAvatar() {
   const badge = document.getElementById('lowStockBadge');
   if (!avatar || !badge) return;
 
-  const items = await api('/items');
-  const lowStockItems = getLowStockItems(items);
-  const count = lowStockItems.length;
+  const [items, salesEvents] = await Promise.all([api('/items'), api('/orders')]);
+  const recommendations = getRestockRecommendations(items, salesEvents);
+  const unread = getUnreadRecommendations(recommendations);
+  const count = unread.length;
 
   badge.textContent = String(count);
 
   if (count > 0) {
     avatar.classList.add('low-stock-avatar--alert');
     badge.style.display = 'flex';
-    avatar.title = `Low stock items: ${count}`;
+    avatar.title = `Restock bot suggestions: ${count}`;
   } else {
     avatar.classList.remove('low-stock-avatar--alert');
     badge.style.display = 'none';
-    avatar.title = 'No low stock items';
+    avatar.title = 'No restock suggestions';
   }
 
   // If the modal is open, refresh list content.
   const modal = document.getElementById('lowStockModal');
   if (modal && !modal.classList.contains('hidden')) {
-    renderLowStockList(lowStockItems);
+    renderLowStockList(recommendations);
   }
 }
 
@@ -248,9 +335,11 @@ async function openLowStockModal() {
   if (!modal) return;
   modal.classList.remove('hidden');
 
-  const items = await api('/items');
-  const lowStockItems = getLowStockItems(items);
-  renderLowStockList(lowStockItems);
+  const [items, salesEvents] = await Promise.all([api('/items'), api('/orders')]);
+  const recommendations = getRestockRecommendations(items, salesEvents);
+  markRecommendationsAsRead(recommendations);
+  updateLowStockAvatar().catch((error) => console.error(error));
+  renderLowStockList(recommendations);
 }
 
 function closeLowStockModal() {
