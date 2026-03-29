@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const showDashboard = isDashboardPage || (!isInventoryPage && !isReportsPage);
   const showInventory = isInventoryPage;
-  const showReports = isReportsPage;
+  const showReports = isReportsPage && !isInventoryPage;
 
   if (dashboardLink) dashboardLink.hidden = !showDashboard;
   if (inventoryLink) inventoryLink.hidden = !showInventory;

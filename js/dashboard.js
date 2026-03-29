@@ -723,6 +723,236 @@ document.getElementById('confirmOrderBtn').addEventListener('click', async () =>
 });
 document.getElementById('newOrderBtn').addEventListener('click', () => startNewOrder().catch(console.error));
 
+document.getElementById('printReceiptBtn').addEventListener('click', () => {
+  const printWindow = window.open('', '', 'height=800,width=400');
+  let receiptHtml = document.getElementById('receiptPaper').innerHTML;
+  
+  // Get QR code canvas and convert to image
+  const qrCanvas = document.getElementById('qrCanvas');
+  if (qrCanvas) {
+    try {
+      const qrImageData = qrCanvas.toDataURL('image/png');
+      // Replace canvas with img tag
+      receiptHtml = receiptHtml.replace(
+        /<canvas[^>]*id="qrCanvas"[^>]*><\/canvas>/g,
+        `<img src="${qrImageData}" style="width: 80px; height: 80px; display: block; margin: 0 auto;">`
+      );
+    } catch (e) {
+      console.warn('Could not capture QR code:', e);
+    }
+  }
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Receipt</title>
+      <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          font-family: 'Courier New', Courier, monospace;
+          margin: 0;
+          padding: 10px;
+          background: white;
+          width: 80mm;
+        }
+        .receipt-paper {
+          width: 100%;
+          background: white;
+          border: none;
+          box-shadow: none;
+          border-radius: 0;
+          overflow: visible;
+          font-family: 'Courier New', Courier, monospace;
+        }
+        .header-band {
+          background: #006BB6;
+          color: white;
+          padding: 15px 10px;
+          text-align: center;
+          border: none;
+        }
+        .header-band .title {
+          color: white;
+          font-size: 18px;
+          font-weight: bold;
+          margin: 0;
+          line-height: 1.2;
+        }
+        .header-band .subtitle {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 10px;
+          margin: 4px 0 0 0;
+        }
+        .store-info {
+          background: white;
+          border: none;
+          padding: 8px 10px;
+          font-size: 9px;
+          text-align: center;
+          line-height: 1.3;
+        }
+        .store-info .line {
+          color: #006BB6;
+          margin: 2px 0;
+        }
+        .store-info svg {
+          display: none;
+        }
+        .section {
+          padding: 8px 10px;
+          border: none;
+          border-bottom: 1px dashed #ccc;
+        }
+        .section:last-child {
+          border-bottom: none;
+        }
+        .meta-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 10px;
+          margin-bottom: 3px;
+          line-height: 1.2;
+        }
+        .meta-row .label {
+          color: #666;
+        }
+        .meta-row .value {
+          color: #111;
+          font-weight: bold;
+          text-align: right;
+        }
+        .section-title {
+          color: #666;
+          font-size: 9px;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+          text-align: center;
+          margin-top: 5px;
+        }
+        .item {
+          margin-bottom: 6px;
+          font-size: 10px;
+        }
+        .item-row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 1px;
+          line-height: 1.2;
+        }
+        .item-row .name {
+          color: #111;
+          font-weight: bold;
+          flex: 1;
+          word-break: break-word;
+        }
+        .item-row .price {
+          color: #111;
+          font-weight: bold;
+          text-align: right;
+          min-width: 50px;
+        }
+        .item-details {
+          color: #999;
+          font-size: 9px;
+          text-align: right;
+          margin-top: 1px;
+        }
+        .total-row {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 8px;
+          font-weight: bold;
+          font-size: 11px;
+          line-height: 1.4;
+        }
+        .total-row .label {
+          color: #111;
+        }
+        .total-row .value {
+          color: #006BB6;
+          text-align: right;
+        }
+        .qr-section {
+          padding: 10px;
+          text-align: center;
+          border-top: 1px dashed #ccc;
+          border-bottom: none;
+        }
+        .qr-section .section-title {
+          font-size: 8px;
+          margin-bottom: 8px;
+        }
+        .qr-wrapper {
+          background: white;
+          border: none;
+          box-shadow: none;
+          border-radius: 0;
+          padding: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .qr-wrapper img {
+          width: 80px;
+          height: 80px;
+          display: block;
+          margin: 0 auto;
+        }
+        .qr-note {
+          color: #999;
+          font-size: 8px;
+          margin-top: 5px;
+        }
+        .thank-you {
+          background: white;
+          border: 1px solid #006BB6;
+          border-radius: 0;
+          padding: 8px;
+          margin-top: 8px;
+          text-align: center;
+          font-size: 9px;
+          line-height: 1.3;
+        }
+        .thank-you p {
+          color: #006BB6;
+          margin: 2px 0;
+          font-weight: bold;
+        }
+        @media print {
+          body {
+            margin: 0;
+            padding: 0;
+            width: 80mm;
+          }
+          .receipt-paper {
+            box-shadow: none;
+            border: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="receipt-paper">
+        ${receiptHtml}
+      </div>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  setTimeout(() => {
+    printWindow.print();
+  }, 250);
+});
+
 // Update time every second
 function updateTime() {
   const now = new Date();
