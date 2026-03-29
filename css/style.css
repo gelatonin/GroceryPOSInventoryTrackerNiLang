@@ -1,0 +1,122 @@
+/* General /* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.app-menu {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+}
+
+/* Dashboard: keep menu clear of top-right item counter */
+body:not(.inventory-page) .app-menu {
+  top: 8px;
+  right: 8px;
+}
+
+body:not(.inventory-page) .app-menu-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  gap: 3px;
+}
+
+body:not(.inventory-page) .app-menu-toggle span {
+  width: 14px;
+  height: 1.8px;
+}
+
+.inventory-page .app-menu {
+  right: 8px;
+  left: auto;
+  top: 8px;
+}
+
+.inventory-page .app-menu-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  gap: 3px;
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.24);
+}
+
+.inventory-page .app-menu-toggle span {
+  width: 14px;
+  height: 1.8px;
+}
+
+.app-menu-toggle {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #22c55e;
+  color: #0b1220;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 10px 22px rgba(34, 197, 94, 0.3);
+}
+
+.app-menu-toggle span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: #052e16;
+}
+
+.app-menu-toggle:focus-visible {
+  outline: 3px solid rgba(34, 197, 94, 0.45);
+  outline-offset: 3px;
+}
+
+.app-menu-list {
+  margin-top: 8px;
+  min-width: 180px;
+  border-radius: 12px;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 16px 36px rgba(2, 6, 23, 0.38);
+  padding: 8px;
+}
+
+.inventory-page .app-menu-list {
+  margin-left: 0;
+}
+
+.app-menu-item {
+  width: 100%;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.app-menu-item:hover {
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.app-menu-item-active {
+  background: #22c55e;
+  color: #052e16;
+  font-weight: 700;
+}
+
+.app-menu-item-danger {
+  color: #fca5a5;
+}
