@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/inventory.css">
+  <link rel="stylesheet" href="css/management.css">
+</head>
+<body class="inventory-page management-page-solo">
+  <div class="app-menu">
+    <button type="button" class="app-menu-toggle" data-action="menu-toggle" aria-expanded="false" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="app-menu-list" data-menu-list hidden>
+      <a href="/management.html" class="app-menu-item">Reports</a>
+      <button type="button" data-action="logout" class="app-menu-item app-menu-item-danger">Logout</button>
+    </div>
+  </div>
+  <div class="container management-container-solo">
+    <main class="main-content">
+      <div class="view-content">
+        <div class="management-header">
+          <div class="page-header" style="margin-bottom: 0;">
+            <h1 class="page-title">Sales Report</h1>
+            <p class="page-description">Tracks every completed order</p>
+          </div>
+
+          <button
+            type="button"
+            id="lowStockAvatar"
+            class="low-stock-avatar"
+            aria-label="Restock bot recommendations"
+            title="Restock bot recommendations"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="3" width="14" height="12" rx="2"></rect>
+              <path d="M9 21h6"></path>
+              <path d="M12 15v6"></path>
+              <circle cx="10" cy="9" r="1"></circle>
+              <circle cx="14" cy="9" r="1"></circle>
+              <path d="M9 12h6"></path>
+            </svg>
+            <span id="lowStockBadge" class="low-stock-badge">0</span>
+          </button>
+        </div>
+
+        <div id="sales-stats-grid" class="grid grid-cols-3 management-stats-grid" aria-live="polite"></div>
+
+        <div class="card sales-chart-card">
+          <h2 class="card-header">Sales Revenue (Last 7 Days)</h2>
+          <div id="salesChartWrapper" class="sales-chart-wrapper">
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h2 class="card-header">Recent Sales</h2>
+          <div class="table-container">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th class="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="sales-table-body">
+                  <!-- Sales rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Restock Bot Modal -->
+  <div id="lowStockModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="lowStockModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="lowStockModalTitle">Restock Bot Suggestions</h2>
+        <button type="button" id="lowStockModalClose" class="modal-close" aria-label="Close">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="lowStockList" class="alert-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/management.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/security.js"></script>
+</body>
+</html>

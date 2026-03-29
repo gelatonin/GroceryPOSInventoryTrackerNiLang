@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grocery System Login</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <h1>Login</h1>
+
+        <div id="serverErrors" class="server-errors" style="display:none;"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" />
+                <div id="usernameError" class="error"></div>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" />
+                <div id="passwordError" class="error"></div>
+            </div>
+
+            <button type="submit" class="login-btn">Log in</button>
+        </form>
+    </div>
+
+    <script src="js/login.js"></script>
+    <script src="js/security.js"></script>
+</body>
+</html>
