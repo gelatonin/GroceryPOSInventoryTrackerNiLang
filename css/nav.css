@@ -1,0 +1,126 @@
+/* General /* Reset and Base Styles */
+* {
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+}
+
+.app-menu {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+}
+
+/* Dashboard: keep menu clear of top-right item counter */
+body:not(.inventory-page) .app-menu {
+  top: 8px;
+  right: 8px;
+}
+
+body:not(.inventory-page) .app-menu-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  gap: 3px;
+}
+
+body:not(.inventory-page) .app-menu-toggle span {
+  width: 14px;
+  height: 1.8px;
+}
+
+.inventory-page .app-menu {
+  right: 8px;
+  left: auto;
+  top: 8px;
+}
+
+.inventory-page .app-menu-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  gap: 3px;
+  box-shadow: 0 4px 12px rgba(0, 107, 182, 0.15);
+}
+
+.inventory-page .app-menu-toggle span {
+  width: 14px;
+  height: 1.8px;
+}
+
+.app-menu-toggle {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #006BB6;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 12px rgba(0, 107, 182, 0.2);
+}
+
+.app-menu-toggle span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.app-menu-toggle:focus-visible {
+  outline: 3px solid rgba(0, 107, 182, 0.3);
+  outline-offset: 3px;
+}
+
+.app-menu-list {
+  margin-top: 8px;
+  min-width: 180px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #0052A3;
+  box-shadow: 0 10px 25px rgba(0, 107, 182, 0.2);
+  padding: 8px;
+}
+
+.inventory-page .app-menu-list {
+  margin-left: 0;
+}
+
+.app-menu-item {
+  width: 100%;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  color: #FFFFFF;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.app-menu-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.app-menu-item-active {
+  background: white;
+  color:#0052A3;
+}
+
+.app-menu-item-danger {
+  color: #ff0000;
+  font-weight: 700;
+}
+
+.inventory-page a.app-menu-item[href="/management.html"] {
+  display: none !important;
+}

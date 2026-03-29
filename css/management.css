@@ -25,21 +25,22 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 1px solid #232338;
-  background-color: #1A1A2E;
-  color: #8888A0;
+  border: 1px solid #E5E7EB;
+  background-color: #F9FAFB;
+  color: #9CA3AF;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  transition: transform 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
+  transition: all 0.2s;
 }
 
 .low-stock-avatar:hover {
   transform: scale(1.04);
-  color: #ffffff;
+  color: #374151;
+  border-color: #D1D5DB;
 }
 
 .low-stock-avatar:active {
@@ -59,7 +60,7 @@
   height: 22px;
   padding: 0 6px;
   border-radius: 999px;
-  background: #ef4444;
+  background: #DC2626;
   color: #ffffff;
   font-size: 12px;
   font-weight: 900;
@@ -69,21 +70,21 @@
 }
 
 .low-stock-avatar.low-stock-avatar--alert {
-  color: #ef4444;
-  border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+  color: #DC2626;
+  border-color: #DC2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
   animation: lowStockPulse 1.5s infinite;
 }
 
 @keyframes lowStockPulse {
   0% {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.08);
+    box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.05);
   }
   100% {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
   }
 }
 
