@@ -227,6 +227,24 @@ body {
     font-weight: 700;
 }
 
+.cart-item .controls .qty-input {
+    width: 52px;
+    height: 28px;
+    border: 1px solid #232338;
+    background: #252540;
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 10px;
+    outline: none;
+}
+
+.cart-item .controls .qty-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
 .cart-totals {
     border-top: 1px solid #232338;
     background: #1A1A2E;
@@ -831,6 +849,55 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.bill-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+}
+
+.bill-field,
+.change-field {
+    flex: 1;
+}
+
+.bill-field p,
+.change-field p {
+    color: #555570;
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.customer-bill-input {
+    width: 100%;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid #232338;
+    background: #252540;
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 0 14px;
+    outline: none;
+}
+
+.customer-bill-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.change-value {
+    color: #22c55e;
+    font-size: 22px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.change-value.insufficient {
+    color: #ef4444;
 }
 
 .btn-confirm {
