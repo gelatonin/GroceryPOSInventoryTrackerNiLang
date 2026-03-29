@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="css/dashboard.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/nav.css">
 </head>
 
 <body>
@@ -138,7 +138,7 @@
     <div class="confirmation-right">
       <div class="header">
         <h2>Payment Method</h2>
-        <p>Cash payment only</p>
+        <p>Cash payment only (soon for the other option)</p>
       </div>
 
       <div class="payment-methods" id="paymentMethods">
@@ -234,6 +234,15 @@
         </svg>
         Start New Order
       </button>
+
+      <button class="btn-new-order" id="printReceiptBtn" style="background: linear-gradient(135deg, #10B981, #059669); margin-top: 12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print Receipt
+      </button>
     </div>
 
     <div class="receipt-right">
@@ -247,6 +256,7 @@
   <script src="js/dashboard.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/security.js"></script>
+  <script src="js/keyboard.js"></script>
 
 </body>
 
